@@ -17,7 +17,7 @@
 
         <c:if test="${flush != null}">
             <div id="flush_success">
-                <c:out value="flush" />
+                <c:out value="${flush}" />
             </div>
         </c:if>
 
