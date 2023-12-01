@@ -171,7 +171,7 @@ public class EmployeeService extends ServiceBase {
         savedEmp.setUpdatedAt(today);
 
         //更新内容についてバリデーションを行う
-        List<String> errors = EmployeeValidator.validate(null, savedEmp, validateCode, validatePass);
+        List<String> errors = EmployeeValidator.validate(this, savedEmp, validateCode, validatePass);
 
         //バリデーションエラーがなければデータを更新する
         if (errors.size() == 0) {
