@@ -73,7 +73,7 @@ public class EmployeeAction extends ActionBase {
      */
     public void entryNew() throws ServletException, IOException {
 
-        putRequestScope(AttributeConst.TOKEN, getTokenId());  //CSRF対策
+        putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策
         putRequestScope(AttributeConst.EMPLOYEE, new EmployeeView()); //空の従業員インスタンス
 
         //新規登録画面を表示
@@ -100,8 +100,7 @@ public class EmployeeAction extends ActionBase {
                     toNumber(getRequestParam(AttributeConst.EMP_ADMIN_FLG)),
                     null,
                     null,
-                    AttributeConst.DEL_FLAG_FALSE.getIntegerValue()
-                    );
+                    AttributeConst.DEL_FLAG_FALSE.getIntegerValue());
 
             //アプリケーションスコープからpepper文字列を取得
             String pepper = getContextScope(PropertyConst.PEPPER);
@@ -112,9 +111,9 @@ public class EmployeeAction extends ActionBase {
             if (errors.size() > 0) {
 
                 //登録中にエラーがあった場合
-                putRequestScope(AttributeConst.ERR, errors);  //エラー情報
-                putRequestScope(AttributeConst.TOKEN, getTokenId());  //CSRF対策
-                putRequestScope(AttributeConst.EMPLOYEE, ev);  //入力された従業員情報
+                putRequestScope(AttributeConst.ERR, errors); //エラー情報
+                putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策
+                putRequestScope(AttributeConst.EMPLOYEE, ev); //入力された従業員情報
 
                 //新規登録画面を再表示
                 forward(ForwardConst.FW_EMP_NEW);
@@ -130,6 +129,30 @@ public class EmployeeAction extends ActionBase {
 
             }
         }
+    }
+
+    /**
+     * 詳細画面を表示する
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void show() throws ServletException, IOException {
+
+        //idを条件に従業員データを取得する
+        EmployeeView ev = service.findOne(toNumber(getRequestParam(AttributeConst.EMP_ID)));
+
+        if (ev == null || ev.getDeleteFlag() == AttributeConst.DEL_FLAG_TRUE.getIntegerValue()) {
+
+            //データが取得できなかった、または論理削除されている場合はエラー画面を表示
+            forward(ForwardConst.FW_ERR_UNKNOWN);
+            return;
+        }
+
+        //取得した従業員情報
+        putRequestScope(AttributeConst.EMPLOYEE, ev);
+
+        //詳細画面を表示
+        forward(ForwardConst.FW_EMP_SHOW);
     }
 
 }
